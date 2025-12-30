@@ -1,7 +1,6 @@
 ﻿#[System.Reflection.Assembly]::LoadWithPartialName("System.Runtime.Serialization") | Out-Null
 
 class Exetest {
-
     [Logger]$logger
     [WebClient]$webClient
     [Object]$appSettings

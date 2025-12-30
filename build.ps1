@@ -1,31 +1,25 @@
 ﻿param (
-    
     [string]$pathToPS2EXE = "C:\Tools\PS2EXE\ps2exe.ps1"
 )
 
 $MyInvocation.MyCommand.CommandType
 #Get the execution directory
 if ($psISE) {
-
     #Script is running in ISE
     $scriptDir = $psISE.CurrentFile | select -ExpandProperty FullPath | Split-Path -Parent
 }
 else {
-
     if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript") {
-
         #Script was invoked from shell or cmd
         $scriptDir = $MyInvocation.MyCommand.Definition | Split-Path -Parent 
     }
     else {
-
         #Script was converted to an executeable
         $scriptDir = [System.Reflection.Assembly]::GetEntryAssembly().Location | Split-Path -Parent
     }
 }
 
 Write-Host "Running from $($scriptDir)" -ForegroundColor Cyan
-
 
 #
 #Build run script
@@ -34,7 +28,6 @@ Write-Host "Running from $($scriptDir)" -ForegroundColor Cyan
 $classesContent = [String]::Empty
 
 foreach ($psFile in (Get-ChildItem -Path $scriptDir -Filter "*.ps1" -Exclude @("run.ps1", "build.ps1", "appsettings.json") -Recurse)) {
-
     Write-Host "Adding $($psFile.Name)" -ForegroundColor Cyan
 
     $content = [System.IO.File]::ReadAllText($psFile.FullName)

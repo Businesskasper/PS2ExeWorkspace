@@ -1,71 +1,58 @@
 ﻿param (
+    [Switch]$silent,
 
-  [Switch]$silent,
+    [Switch]$verbose,
 
-  [Switch]$verbose,
+    [String]$name,
 
-  [String]$name,
-
-  [ValidateRange(0,5)]
-  [Int]$age
+    [ValidateRange(0, 5)]
+    [Int]$age
 )
 
 class Todo {
-
     [int]$id
     [int]$userId
     [string]$title
     [bool]$completed
 }
 class User {
-
     [int]$userId
     [string]$userName
     [int]$userAge
 }
 class Logger {
-
     Log([string]$textToLog) {
-
         Write-Host -Object $textToLog -ForegroundColor Green
     }
 
     LogException([Exception]$exception) {
-
         Write-Host -Object $_.ToString() -ForegroundColor Red
     }
 
     Dump([Object]$object) {
-
         Write-Host -Object ($object | Format-List | Out-String) -ForegroundColor Yellow
     }
 }
 class WebClient {
-
     [object]$Logger
 
     WebClient([object]$logger) {
-
         $this.Logger = $logger
     }
 
     [Object] Get([string]$url, [bool]$useDefaultCredentials) {
-
         $requestParameter = @{
             Uri = $url
         }
 
         if ($useDefaultCredentials) {
-
             $requestParameter.Add("UseDefaultCredentials", $true)
         }
         
         try {
-
             return $(Invoke-WebRequest @requestParameter | select -ExpandProperty Content | ConvertFrom-Json)
         }
         catch [Exception] {
-
             $this.Logger.LogException($_.Exception)
             throw $_
         }
@@ -74,7 +61,6 @@ class WebClient {
 #[System.Reflection.Assembly]::LoadWithPartialName("System.Runtime.Serialization") | Out-Null
 
 class Exetest {
-
     [Logger]$logger
     [WebClient]$webClient
     [Object]$appSettings
@@ -99,19 +85,16 @@ class Exetest {
 
 #Get the execution directory
 if ($psISE) {
-
     #Script is running in ISE
     $global:root = $psISE.CurrentFile | select -ExpandProperty FullPath | Split-Path -Parent
 }
 else {
 
     if ($MyInvocation.MyCommand.CommandType -eq "ExternalScript") {
-
         #Script was invoked from shell or cmd
         $global:root = $MyInvocation.MyCommand.Definition | Split-Path -Parent 
     }
     else {
-
         #Script was converted to an executeable
         $global:root = [System.Reflection.Assembly]::GetEntryAssembly().Location | Split-Path -Parent
     }
